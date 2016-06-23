@@ -61,6 +61,22 @@ namespace uaf
         return ret;
     }
 
+    // Convert the variant to a native C++ uint8_t matrix.
+    // =============================================================================================
+    Status Variant::toByteMatrix(std::vector<uint8_t>& vec) const
+    {
+        UaByteArray arr;
+        UaInt32Array dim;
+        uaf::Status ret = evaluate(
+                uaVariant_.toByteMatrix(arr, dim),
+                uaVariant_.type(),
+                OpcUaType_Byte);
+        vec.resize(arr.size());
+        for (int i = 0; i < arr.size(); i++)
+            vec[i] = arr[i];
+        return ret;
+    }
+
 #define IMPLEMENT_VARIANT_TOXXX_METHOD(XXX, CPPTYPE)                                               \
     /** Convert the variant to a native C++ type.                                                  \
     =========================================================================================== */ \
@@ -111,6 +127,33 @@ namespace uaf
     IMPLEMENT_VARIANT_TOXXXARRAY_METHOD(Float  , float)
     IMPLEMENT_VARIANT_TOXXXARRAY_METHOD(Double , double)
 
+#define IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(XXX, CPPTYPE)                                         \
+    /** Convert the variant to a native C++ array.                                                 \
+    =========================================================================================== */ \
+    Status Variant::to##XXX##Matrix(std::vector<CPPTYPE>& vec) const                               \
+    {                                                                                              \
+        Ua##XXX##Array arr;                                                                        \
+        UaInt32Array dim;                                                                          \
+        uaf::Status ret = evaluate(                                                                \
+                uaVariant_.to##XXX##Matrix(arr, dim),                                              \
+                uaVariant_.type(),                                                                 \
+                OpcUaType_##XXX);                                                                  \
+        vec.resize(arr.length());                                                                  \
+        for (std::size_t i = 0; i < arr.length(); i++)                                             \
+            vec[i] = arr[i];                                                                       \
+        return ret;                                                                                \
+    }
+
+
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(SByte  , int8_t)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(Int16  , int16_t)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(UInt16 , uint16_t)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(Int32  , int32_t)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(UInt32 , uint32_t)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(Int64  , int64_t)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(UInt64 , uint64_t)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(Float  , float)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD(Double , double)
 
 
 #define IMPLEMENT_VARIANT_TOXXX_METHOD_NATIVE_UAF(XXX, INTERNAL)                                   \
@@ -189,6 +232,22 @@ namespace uaf
     IMPLEMENT_VARIANT_TOXXXARRAY_METHOD_NATIVE_UAF(ExtensionObject , extensionObject_)
 
 
+#define IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(XXX)                                             \
+    /** Convert the variant to a native C++ array.                                                 \
+    =========================================================================================== */ \
+    Status Variant::to##XXX##Matrix(std::vector<uaf::XXX>& ) const                                 \
+    {                                                                                              \
+        return Status();                                                                           \
+    }
+
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(ByteString)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(NodeId)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(Guid)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(ExpandedNodeId)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(QualifiedName)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(LocalizedText)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(DateTime)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(ExtensionObject)
 
 
 #define IMPLEMENT_VARIANT_SETXXX_METHOD(XXX, CPPTYPE)                                              \
@@ -269,6 +328,19 @@ namespace uaf
         return ret;
     }
 
+    // Convert the variant to a bool vector.
+    // =============================================================================================
+    Status Variant::toBooleanMatrix(std::vector<bool>& vec) const
+    {
+        UaBoolArray arr;
+        UaInt32Array dim;
+        uaf::Status ret = evaluate(uaVariant_.toBoolMatrix(arr, dim), uaVariant_.type(), OpcUaType_Boolean);
+        vec.resize(arr.length());
+        for (std::size_t i = 0; i < arr.length(); i++)
+            vec[i] = arr[i];
+        return ret;
+    }
+
     // Set the variant to a boolean.
     // =============================================================================================
     void Variant::setBoolean(bool val)
@@ -316,6 +388,26 @@ namespace uaf
     {
         UaStringArray arr;
         Status ret = evaluate(uaVariant_.toStringArray(arr), uaVariant_.type(), OpcUaType_String);
+        vec.resize(arr.length());
+        for (std::size_t i = 0; i < arr.length(); i++)
+        {
+            UaString uaString(&arr[i]);
+
+            if (uaString.isEmpty() || uaString.isNull())
+                vec[i] = string();
+            else
+                vec[i] = string(uaString.toUtf8());
+        }
+        return ret;
+    }
+
+    // Convert the matrix variant to a string array.
+    // =============================================================================================
+    Status Variant::toStringMatrix(std::vector<std::string>& vec) const
+    {
+        UaStringArray arr;
+        UaInt32Array dim;
+        Status ret = evaluate(uaVariant_.toStringMatrix(arr, dim), uaVariant_.type(), OpcUaType_String);
         vec.resize(arr.length());
         for (std::size_t i = 0; i < arr.length(); i++)
         {
@@ -763,8 +855,15 @@ namespace uaf
             return (bool)(uaVariant_.isArray());
     }
 
+    bool Variant::isMatrix() const
+    {
+        if (isNativeUaf_)
+            return false;
+        else
+            return (bool)(uaVariant_.isMatrix());
+    }
 
-    // Size of the array in case isArra() is True
+    // Size of the array in case isArray() is True
     // =============================================================================================
     uint32_t Variant::arraySize() const
     {

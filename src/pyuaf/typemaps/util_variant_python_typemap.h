@@ -426,6 +426,40 @@
     }
 
 
+#define CREATE_PRIMITIVE_MATRIX(TYPE, CTYPE, VARIANT, PYRESULT)                                 \
+    std::vector<CTYPE> vec;                                                                     \
+    VARIANT.to##TYPE##Matrix(vec);                                                              \
+    PYRESULT = PyList_New(vec.size());                                                          \
+    for (Py_ssize_t i = 0; i < (Py_ssize_t) vec.size(); i++)                                    \
+    {                                                                                           \
+        uaf::primitives::TYPE* primitive = new uaf::primitives::TYPE;                           \
+        primitive->value = vec[i];                                                              \
+        PyObject* newItem = SWIG_NewPointerObj(primitive,                                       \
+                                               $descriptor(uaf::primitives::TYPE *),            \
+                                               SWIG_POINTER_OWN);                               \
+        PyList_SetItem(PYRESULT, i, newItem);                                                   \
+    }
+
+
+#define CREATE_MATRIXOBJECT(VARIANT, PYOBJECT)  \
+    if (VARIANT.type() == uaf::opcuatypes::SByte)                { CREATE_PRIMITIVE_MATRIX(SByte,      int8_t, VARIANT, PYOBJECT)   } \
+    else if (VARIANT.type() == uaf::opcuatypes::Byte)            { CREATE_PRIMITIVE_MATRIX(Byte,       uint8_t, VARIANT, PYOBJECT)  } \
+    else if (VARIANT.type() == uaf::opcuatypes::Int16)           { CREATE_PRIMITIVE_MATRIX(Int16,      int16_t, VARIANT, PYOBJECT)  } \
+    else if (VARIANT.type() == uaf::opcuatypes::UInt16)          { CREATE_PRIMITIVE_MATRIX(UInt16,     uint16_t, VARIANT, PYOBJECT) } \
+    else if (VARIANT.type() == uaf::opcuatypes::Int32)           { CREATE_PRIMITIVE_MATRIX(Int32,      int32_t, VARIANT, PYOBJECT)  } \
+    else if (VARIANT.type() == uaf::opcuatypes::UInt32)          { CREATE_PRIMITIVE_MATRIX(UInt32,     uint32_t, VARIANT, PYOBJECT) } \
+    else if (VARIANT.type() == uaf::opcuatypes::Int64)           { CREATE_PRIMITIVE_MATRIX(Int64,      int64_t, VARIANT, PYOBJECT)  } \
+    else if (VARIANT.type() == uaf::opcuatypes::UInt64)          { CREATE_PRIMITIVE_MATRIX(UInt64,     uint64_t, VARIANT, PYOBJECT) } \
+    else if (VARIANT.type() == uaf::opcuatypes::Float)           { CREATE_PRIMITIVE_MATRIX(Float,      float, VARIANT, PYOBJECT)    } \
+    else if (VARIANT.type() == uaf::opcuatypes::Double)          { CREATE_PRIMITIVE_MATRIX(Double,     double, VARIANT, PYOBJECT)   } \
+    else if (VARIANT.type() == uaf::opcuatypes::String)          { CREATE_PRIMITIVE_MATRIX(String,     std::string, VARIANT, PYOBJECT)   } \
+    else if (VARIANT.type() == uaf::opcuatypes::ByteString)      { CREATE_PRIMITIVE_MATRIX(ByteString, uaf::ByteString, VARIANT, PYOBJECT)   } \
+    else                                                                                           \
+    {                                                                                              \
+        PyErr_SetString(PyExc_TypeError, "Unsupported type!");                                     \
+        return NULL;                                                                               \
+    }
+
 
 #define CREATE_OBJECT(VARIANT, PYOBJECT)  \
     if (VARIANT.type() == uaf::opcuatypes::Boolean)              { CREATE_PRIMITIVE(Boolean, VARIANT, PYOBJECT)      }  \
@@ -464,6 +498,10 @@
     else if (VARIANT.isArray())                                                                    \
     {                                                                                              \
         CREATE_ARRAYOBJECT(VARIANT, PYOBJECT)                                                      \
+    }                                                                                              \
+    else if (VARIANT.isMatrix())                                                                   \
+    {                                                                                              \
+        CREATE_MATRIXOBJECT(VARIANT, PYOBJECT)                                                     \
     }                                                                                              \
     else                                                                                           \
     {                                                                                              \

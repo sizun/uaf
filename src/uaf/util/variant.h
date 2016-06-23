@@ -117,6 +117,13 @@ namespace uaf
          */
         uint32_t arraySize() const;
 
+       /**
+	 * Is there a matrix ?
+	 *
+	 * @return True if there is a matrix.
+	 */
+	bool isMatrix() const;
+
 
 #define DECLARE_VARIANT_METHODS(XXX, TYPE, CONSTTYPE)                                              \
         /** Convert the variant to the specified type.                                             \
@@ -127,11 +134,18 @@ namespace uaf
         uaf::Status to##XXX(TYPE& val) const;                                                      \
                                                                                                    \
         /** Convert the variant array to a native C++ primitive vector.                            \
-         *                                                                                         \
+         *                                             148                                            \
          * @param vec   Value to update.                                                           \
          * @return      Status of the conversion.                                                  \
          */                                                                                        \
         Status to##XXX##Array(std::vector<TYPE>& vec) const;                                       \
+                                                                                                   \
+        /** Convert the variant matrix to a native C++ primitive vector.                           \
+         *                                                                                         \
+         * @param vec   Value to update.                                                           \
+         * @return      Status of the conversion.                                                  \
+         */                                                                                        \
+        Status to##XXX##Matrix(std::vector<TYPE>& vec) const;                                      \
                                                                                                    \
         /** Set the variant to a C++ primitive type.                                               \
          *                                                                                         \
