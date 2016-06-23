@@ -9,8 +9,7 @@ set(  UAF_CLIENT_EXAMPLES
       how_to_browse_some_nodes
       how_to_read_some_historical_data
       how_to_write_some_data_asynchronously
-      how_to_change_the_default_session_behavior
-      how_to_change_the_default_subscription_behavior
+      how_to_change_the_default_session_and_subscription_behavior
    )
 
 
@@ -29,7 +28,7 @@ foreach(UAF_CLIENT_EXAMPLE ${UAF_CLIENT_EXAMPLES})
     else(WIN32)
         target_link_libraries(${UAF_CLIENT_EXAMPLE} 
                               uafclient uafutil
-                              ssl crypto dl rt pthread 
+                              ${LIBXML2_LIBRARIES} ssl crypto dl rt pthread 
                               uafutil uabase uapki uastack )
     endif(WIN32)
     

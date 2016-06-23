@@ -76,6 +76,15 @@ class Client(ClientBase):
         self.__eventNotificationLock__ = threading.Lock()
     
     
+    def __del__(self):
+        # first disconnect all sessions, to avoid memory problems when the client
+        # is garbage collected before any ongoing callback threads are fired!
+        self.manuallyDisconnectAllSessions()
+        # wait some time for any ongoing callback threads to be fired
+        time.sleep(0.1)
+        ClientBase.__del__(self)
+    
+    
     def __dispatch_readComplete__(self, result):
         """
         Dispatch the result of the asynchronous request either to a virtual readComplete function,
@@ -1093,6 +1102,17 @@ class Client(ClientBase):
             Base exception, catch this to handle any other errors.
        """
        ClientBase.manuallyDisconnect(self, clientConnectionId).test()
+    
+    
+    def manuallyDisconnectAllSessions(self):
+       """
+       Disconnect all sessions.
+      
+       To stress that normally the UAF takes care of session connection and disconnection,
+       this method has a "manually" prefix. Normally it should not be used explicitely,
+       as all sessions will be disconnected automatically when the client is deleted.
+       """
+       ClientBase.manuallyDisconnectAllSessions(self)
     
     
     def manuallySubscribe(self, clientConnectionId, subscriptionSettings=None):
@@ -2451,6 +2471,26 @@ class Client(ClientBase):
                                               results)
         status.test()
         return results
+        
+            
+    def structureDefinition(self, dataTypeId):
+        """
+        Get a structure definition for the given datatype NodeId.
+        
+        :param dataTypeId:    NodeId of the datatype.
+        :type  dataTypeId:    :class:`~pyuaf.util.NodeId`.
+        :return:              The definition of this datatype. 
+        :rtype:               :class:`~pyuaf.util.StructureDefinition`.
+        :raise pyuaf.util.errors.DefinitionNotFoundError:
+             Will be raised if no definition could be found.
+        :raise pyuaf.util.errors.UafError:
+             Base exception, catch this to handle any UAF errors.
+        """
+        result = pyuaf.util.StructureDefinition()
+        status = ClientBase.structureDefinition(self, dataTypeId, result)
+        status.test()
+        return result
+        
         
         
     def processRequest(self, request, resultCallback=None, notificationCallbacks=[]):

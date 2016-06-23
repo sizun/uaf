@@ -723,6 +723,28 @@ namespace uaf
 
         ///@} //////////////////////////////////////////////////////////////////////////////////////
         /**
+         *  @name Definitions
+         *  Generic methods to get datatype definitions
+         */
+        ///@{
+
+
+        /**
+         * Get the definition of a structured datatype.
+         *
+         *
+         * @param dataTypeId	The NodeId of the structured datatype.
+         * @param definition    Output parameter, the definition (if found).
+         * @return				DefinitionNotFoundError if no definition was found,
+         * 						Good otherwise.
+         */
+        uaf::Status structureDefinition(
+        		const uaf::NodeId &dataTypeId,
+        		uaf::StructureDefinition& definition);
+
+
+        ///@} //////////////////////////////////////////////////////////////////////////////////////
+        /**
          *  @name ManualConnection
          *  Manually create and remove sessions.
          */
@@ -822,6 +844,16 @@ namespace uaf
          * @return                      Good if the session was successfully deleted, bad if not.
          */
         uaf::Status manuallyDisconnect(uaf::ClientConnectionId clientConnectionId);
+
+
+        /**
+         * Disconnect all sessions.
+         *
+         * To stress that normally the UAF takes care of session connection and disconnection,
+         * this method has a "manually" prefix. Normally it should not be used explicitely,
+         * as all sessions will be disconnected automatically when the client is deleted.
+         */
+        void manuallyDisconnectAllSessions();
 
 
         ///@} //////////////////////////////////////////////////////////////////////////////////////

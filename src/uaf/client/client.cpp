@@ -645,6 +645,14 @@ namespace uaf
     }
 
 
+    // Manual disconnection of all sessions
+    //==============================================================================================
+    void Client::manuallyDisconnectAllSessions()
+    {
+        return sessionFactory_->deleteAllSessions();
+    }
+
+
     // Manual subscription
     //==============================================================================================
     Status Client::manuallySubscribe(
@@ -914,6 +922,13 @@ namespace uaf
         return processRequest<uaf::HistoryReadRawModifiedService>(request, result);
     }
 
+
+    // Get a structure definition
+    // =============================================================================================
+    Status Client::structureDefinition(const uaf::NodeId &dataTypeId, uaf::StructureDefinition& definition)
+    {
+        return sessionFactory_->structureDefinition(dataTypeId, definition);
+    }
 
 
     // Private template function implementation: assign a UAF handle
