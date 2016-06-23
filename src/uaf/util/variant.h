@@ -157,9 +157,14 @@ namespace uaf
          *                                                                                         \
          * @param vec   New value.                                                                 \
          */                                                                                        \
-        void set##XXX##Array(const std::vector<TYPE>& vec);
-
-
+        void set##XXX##Array(const std::vector<TYPE>& vec);                                        \
+                                                                                                   \
+        /** Set the variant to a C++ primitive array.                                              \
+         *                                                                                         \
+         * @param vec   New values.                                                                \
+         * @param dim   New dimensions.                                                            \
+         */                                                                                        \
+        void set##XXX##Matrix(const std::vector<TYPE>& vec, const std::vector<int32_t>& dim);
 
 
         DECLARE_VARIANT_METHODS(Boolean         , bool                , bool)

@@ -287,6 +287,20 @@ namespace uaf
         uaVariant_.setByteArray(arr);
     }
 
+    // Set the variant to a C++ primitive byte matrix.
+    // =============================================================================================
+    void Variant::setByteMatrix(const std::vector<uint8_t>& vec, const std::vector<int32_t>& dim)
+    {
+        clear();
+        UaByteArray arr;
+        arr.resize(vec.size());
+        for (std::size_t i = 0; i < vec.size(); i++) { arr[int(i)] = vec[i]; }
+        UaInt32Array d;
+        d.create(dim.size());
+        for (std::size_t i = 0; i < dim.size(); i++) { d[i] = dim[i]; }
+        uaVariant_.setByteMatrix(arr, d);
+    }
+
 
 #define IMPLEMENT_VARIANT_SETXXXARRAY_METHOD(XXX, CPPTYPE)                                         \
     /** Set the variant to a C++ primitive type.                                                   \
@@ -310,6 +324,30 @@ namespace uaf
     IMPLEMENT_VARIANT_SETXXXARRAY_METHOD(Float  , float)
     IMPLEMENT_VARIANT_SETXXXARRAY_METHOD(Double , double)
 
+#define IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(XXX, CPPTYPE)                                         \
+    /** Set the variant to a C++ primitive type.                                                   \
+    =========================================================================================== */ \
+    void Variant::set##XXX##Matrix(const std::vector<CPPTYPE>& vec, const std::vector<int32_t>& dim) \
+    {                                                                                              \
+        clear();                                                                                   \
+        Ua##XXX##Array arr;                                                                        \
+        arr.create(vec.size());                                                                    \
+        for (std::size_t i = 0; i < vec.size(); i++) { arr[i] = vec[i]; }                          \
+		UaInt32Array d;                                                                            \
+	    d.create(dim.size());                                                                      \
+	    for (std::size_t i = 0; i < dim.size(); i++) { d[i] = dim[i]; }                            \
+        uaVariant_.set##XXX##Matrix(arr, d);                                                       \
+    }
+
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(SByte  , int8_t)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(Int16  , int16_t)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(UInt16 , uint16_t)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(Int32  , int32_t)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(UInt32 , uint32_t)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(Int64  , int64_t)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(UInt64 , uint64_t)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(Float  , float)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD(Double , double)
 
     // Convert the variant to a bool.
     // =============================================================================================
@@ -368,7 +406,19 @@ namespace uaf
         uaVariant_.setBoolArray(arr);
     }
 
-
+    // Set the variant to a boolean matrix.
+    // =============================================================================================
+    void Variant::setBooleanMatrix(const std::vector<bool>& vec, const std::vector<int32_t>& dim)
+    {
+        clear();
+        UaBooleanArray arr;
+        arr.create(vec.size());
+        for (std::size_t i = 0; i < vec.size(); i++) { arr[i] = vec[i]; }
+        UaInt32Array d;
+        d.create(dim.size());
+        for (std::size_t i = 0; i < dim.size(); i++) { d[i] = dim[i]; }
+        uaVariant_.setBoolMatrix(arr, d);
+    }
 
     // Convert the variant to a string.
     // =============================================================================================
@@ -454,6 +504,20 @@ namespace uaf
     }
 
 
+    // Set the variant to a string matrix.
+    // =============================================================================================
+    void Variant::setStringMatrix(const std::vector<std::string>& vec, const std::vector<int32_t>& dim)
+    {
+        clear();
+        UaStringArray arr;
+        arr.create(vec.size());
+        for (std::size_t i = 0; i < vec.size(); i++) { UaString(vec[i].c_str()).copyTo(&arr[i]); }
+        UaInt32Array d;
+        d.create(dim.size());
+        for (std::size_t i = 0; i < dim.size(); i++) { d[i] = dim[i]; }
+        uaVariant_.setStringMatrix(arr, d);
+    }
+
 #define IMPLEMENT_VARIANT_TOXXX_METHOD_COMPLEX(XXX)                                                \
     /** Convert the variant to a complex native C++ type.                                          \
     =========================================================================================== */ \
@@ -531,6 +595,24 @@ namespace uaf
     IMPLEMENT_VARIANT_SETXXXARRAY_METHOD_COMPLEX(LocalizedText)
     IMPLEMENT_VARIANT_SETXXXARRAY_METHOD_COMPLEX(DateTime)
 
+
+#define IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD_COMPLEX(XXX)                                          \
+    /** Convert the variant to a complex native C++ type.                                          \
+    =========================================================================================== */ \
+    void Variant::set##XXX##Matrix(const std::vector<uaf::XXX>& vec, const std::vector<int32_t>& dim) \
+    {                                                                                              \
+        clear();                                                                                   \
+        Ua##XXX##Array arr;                                                                        \
+        arr.create(vec.size());                                                                    \
+        for (std::size_t i = 0; i < vec.size(); i++) { vec[i].toSdk(&arr[i]); }                    \
+		UaInt32Array d;                                                                            \
+	    d.create(dim.size());                                                                      \
+	    for (std::size_t i = 0; i < dim.size(); i++) { d[i] = dim[i]; }                            \
+        uaVariant_.set##XXX##Matrix(arr, d);                                                       \
+    }
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD_COMPLEX(ByteString)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD_COMPLEX(LocalizedText)
+	IMPLEMENT_VARIANT_SETXXXMATRIX_METHOD_COMPLEX(DateTime)
 
 #define IMPLEMENT_VARIANT_SETXXX_METHOD_NATIVE_UAF(XXX, INTERNAL)                                  \
     /** Convert the variant to a native uaf:: C++ type.                                            \

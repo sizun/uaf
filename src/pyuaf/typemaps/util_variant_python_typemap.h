@@ -156,6 +156,47 @@
     OBJECT.set##TYPE##Array(array);
 
 
+#define CONVERT_PRIMITIVE_MATRIX(IN, TYPE, CTYPE, DIM, OBJECT)                              \
+    std::vector<CTYPE> array;                                                               \
+    Py_ssize_t length = PySequence_Size(IN);                                                \
+    array.resize(length);                                                                   \
+    for (Py_ssize_t i = 0; i < length; i++)                                                 \
+    {                                                                                       \
+        PyObject* currentPyObject = PySequence_GetItem(IN, i);                              \
+        if (currentPyObject == 0)                                                           \
+        {                                                                                   \
+            PyErr_SetString(PyExc_TypeError, "Unsupported type!");                          \
+            return NULL;                                                                    \
+        }                                                                                   \
+        else if (PRIMITIVE_CONDITION(currentPyObject, TYPE))                                \
+        {                                                                                   \
+            uaf::primitives::TYPE* primitive;                                               \
+            SWIG_ConvertPtr(currentPyObject,                                                \
+                            (void **) &primitive,                                           \
+                            $descriptor(uaf::primitives::TYPE *),                           \
+                            SWIG_POINTER_EXCEPTION);                                        \
+            array[i] = primitive->value;                                                    \
+        }                                                                                   \
+        else                                                                                \
+        {                                                                                   \
+            PyErr_SetString(PyExc_TypeError, "Matrix contains inconsistent types!");        \
+            return NULL;                                                                    \
+        }                                                                                   \
+    }                                                                                       \
+	std::vector<int32_t> d;                                                                 \
+    Py_ssize_t ndim = PySequence_Size(DIM);                                                 \
+    d.resize(ndim);                                                                         \
+    for (Py_ssize_t i = 0; i < ndim; i++)                                                   \
+    {                                                                                       \
+        PyObject* currentPyObject = PySequence_GetItem(DIM, i);                             \
+        uaf::primitives::Int32* primitive;                                                  \
+        SWIG_ConvertPtr(currentPyObject,                                                    \
+                            (void **) &primitive,                                           \
+                            $descriptor(uaf::primitives::Int32 *),                          \
+                            SWIG_POINTER_EXCEPTION);                                        \
+        d[i] = primitive->value;                                                            \
+    }                                                                                       \
+    OBJECT.set##TYPE##Matrix(array, d);
 
 
 
@@ -256,6 +297,28 @@
     else { PyErr_SetString(PyExc_TypeError, "Unsupported type!"); return NULL; }
 
 
+#define PYUAF_CONVERT_MATRIXOBJECT(FIRSTOBJECT, ARRAY, DIM,    VARIANT)                             \
+    if (FIRSTOBJECT == 0)                                                                           \
+    {                                                                                               \
+        PyErr_SetString(PyExc_TypeError, "Could not determine the type of the matrix!");             \
+        return NULL;                                                                                \
+    }                                                                                               \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, Boolean))      { CONVERT_PRIMITIVE_MATRIX(ARRAY, Boolean,    bool,              DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, SByte))        { CONVERT_PRIMITIVE_MATRIX(ARRAY, SByte,      int8_t,            DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, Byte))         { CONVERT_PRIMITIVE_MATRIX(ARRAY, Byte,       uint8_t,           DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, UInt16))       { CONVERT_PRIMITIVE_MATRIX(ARRAY, UInt16,     uint16_t,          DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, Int16))        { CONVERT_PRIMITIVE_MATRIX(ARRAY, Int16,      int16_t,           DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, UInt32))       { CONVERT_PRIMITIVE_MATRIX(ARRAY, UInt32,     uint32_t,          DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, Int32))        { CONVERT_PRIMITIVE_MATRIX(ARRAY, Int32,      int32_t,           DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, UInt64))       { CONVERT_PRIMITIVE_MATRIX(ARRAY, UInt64,     uint64_t,          DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, Int64))        { CONVERT_PRIMITIVE_MATRIX(ARRAY, Int64,      int64_t,           DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, Float))        { CONVERT_PRIMITIVE_MATRIX(ARRAY, Float,      float,             DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, Double))       { CONVERT_PRIMITIVE_MATRIX(ARRAY, Double,     double,            DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, String))       { CONVERT_PRIMITIVE_MATRIX(ARRAY, String,     std::string,       DIM,   VARIANT) } \
+    else if (PRIMITIVE_CONDITION(FIRSTOBJECT, ByteString))   { CONVERT_PRIMITIVE_MATRIX(ARRAY, ByteString, uaf::ByteString,   DIM,   VARIANT) } \
+    else { PyErr_SetString(PyExc_TypeError, "Unsupported matrix type!"); return NULL; }
+
+
 #define CONVERT_OBJECT(PYOBJECT, VARIANT)                                                                          \
     if      (PRIMITIVE_CONDITION(PYOBJECT, Boolean))      { CONVERT_PRIMITIVE(PYOBJECT, Boolean,        VARIANT) } \
     else if (PRIMITIVE_CONDITION(PYOBJECT, SByte))        { CONVERT_PRIMITIVE(PYOBJECT, SByte,          VARIANT) } \
@@ -307,6 +370,22 @@
         char* data = PyByteArray_AsString(PYOBJECT);                                               \
         Py_ssize_t length = PyByteArray_Size(PYOBJECT);                                            \
         VARIANT.setByteString((uint8_t*)data, length);                                             \
+    }                                                                                              \
+    else if (PyTuple_Check(PYOBJECT))                                                              \
+    {                                                                                              \
+    	PyObject* data = PyTuple_GetItem(PYOBJECT, 0);                                             \
+    	Py_ssize_t length = PySequence_Size(data);                                                 \
+    	PyObject* dim = PyTuple_GetItem(PYOBJECT, 1);                                              \
+        if (length > 0)                                                                            \
+        {                                                                                          \
+            PyObject* firstPyObject = PySequence_GetItem(data, 0);                                 \
+            PYUAF_CONVERT_MATRIXOBJECT(firstPyObject, data, dim, VARIANT)                          \
+        }                                                                                          \
+        else                                                                                       \
+        {                                                                                          \
+            PyErr_SetString(PyExc_TypeError, "Unsupported matrix type!");                          \
+            return NULL;                                                                           \
+        }                                                                                          \
     }                                                                                              \
     else if (PySequence_Check(PYOBJECT))                                                           \
     {                                                                                              \
