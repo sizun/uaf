@@ -428,8 +428,10 @@
 
 #define CREATE_PRIMITIVE_MATRIX(TYPE, CTYPE, VARIANT, PYRESULT)                                 \
     std::vector<CTYPE> vec;                                                                     \
-    VARIANT.to##TYPE##Matrix(vec);                                                              \
-    PYRESULT = PyList_New(vec.size());                                                          \
+    std::vector<int32_t> d;                                                                     \
+    VARIANT.to##TYPE##Matrix(vec, d);                                                           \
+    PYRESULT = PyTuple_New(2);                                                                  \
+    PyObject* data = PyList_New(vec.size());                                                    \
     for (Py_ssize_t i = 0; i < (Py_ssize_t) vec.size(); i++)                                    \
     {                                                                                           \
         uaf::primitives::TYPE* primitive = new uaf::primitives::TYPE;                           \
@@ -437,8 +439,20 @@
         PyObject* newItem = SWIG_NewPointerObj(primitive,                                       \
                                                $descriptor(uaf::primitives::TYPE *),            \
                                                SWIG_POINTER_OWN);                               \
-        PyList_SetItem(PYRESULT, i, newItem);                                                   \
-    }
+        PyList_SetItem(data, i, newItem);                                                       \
+    }                                                                                           \
+    PyTuple_SetItem(PYRESULT, 0, data);                                                         \
+    PyObject* dim = PyList_New(d.size());                                                       \
+    for (Py_ssize_t i = 0; i < (Py_ssize_t) d.size(); i++)                                      \
+    {                                                                                           \
+        uaf::primitives::Int32* primitive = new uaf::primitives::Int32;                         \
+        primitive->value = d[i];                                                                \
+        PyObject* newItem = SWIG_NewPointerObj(primitive,                                       \
+                                               $descriptor(uaf::primitives::Int32 *),           \
+                                               SWIG_POINTER_OWN);                               \
+        PyList_SetItem(dim, i, newItem);                                                        \
+    }                                                                                           \
+    PyTuple_SetItem(PYRESULT, 1, dim);
 
 
 #define CREATE_MATRIXOBJECT(VARIANT, PYOBJECT)  \

@@ -145,7 +145,7 @@ namespace uaf
          * @param vec   Value to update.                                                           \
          * @return      Status of the conversion.                                                  \
          */                                                                                        \
-        Status to##XXX##Matrix(std::vector<TYPE>& vec) const;                                      \
+        Status to##XXX##Matrix(std::vector<TYPE>& vec, std::vector<int32_t>& dim) const;           \
                                                                                                    \
         /** Set the variant to a C++ primitive type.                                               \
          *                                                                                         \
