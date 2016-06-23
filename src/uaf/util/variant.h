@@ -134,7 +134,7 @@ namespace uaf
         uaf::Status to##XXX(TYPE& val) const;                                                      \
                                                                                                    \
         /** Convert the variant array to a native C++ primitive vector.                            \
-         *                                             148                                            \
+         *                                                                                         \
          * @param vec   Value to update.                                                           \
          * @return      Status of the conversion.                                                  \
          */                                                                                        \
