@@ -237,22 +237,39 @@ namespace uaf
     IMPLEMENT_VARIANT_TOXXXARRAY_METHOD_NATIVE_UAF(ExtensionObject , extensionObject_)
 
 
-#define IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(XXX)                                             \
-    /** TODO: Convert the matrix variant to a native C++ array.                                    \
+#define IMPLEMENT_VARIANT_TOXXXMATRIX_METHODY_METHOD_NATIVE_UAF(XXX)                               \
+    /** Convert the matrix variant to a C++ array. TODO: treat native type matrix case             \
     =========================================================================================== */ \
-    Status Variant::to##XXX##Matrix(std::vector<uaf::XXX>&, std::vector<int32_t>& dim) const       \
+    Status Variant::to##XXX##Matrix(std::vector<uaf::XXX>& vec, std::vector<int32_t>& dim) const   \
     {                                                                                              \
-        return Status();                                                                           \
+        uaf::Status ret;                                                                           \
+        if (isNativeUaf_)                                                                          \
+        {                                                                                          \
+            ret = uaf::WrongTypeError();                                                           \
+        }                                                                                          \
+        else                                                                                       \
+        {                                                                                          \
+            Ua##XXX##Array arr;                                                                    \
+            UaInt32Array d;                                                                        \
+            ret = evaluate(                                                                        \
+                uaVariant_.to##XXX##Matrix(arr, d),                                                \
+                uaVariant_.type(),                                                                 \
+                OpcUaType_##XXX);                                                                  \
+            vec.resize(arr.length());                                                              \
+            for (std::size_t i = 0; i < arr.length(); i++)                                         \
+                vec[i].fromSdk(arr[i]);                                                            \
+            dim.resize(d.length());                                                                \
+            for (OpcUa_UInt32 i = 0; i < d.length(); i++)                                          \
+                dim[i] = d[i];                                                                     \
+        }                                                                                          \
+        return ret;                                                                                \
     }
 
-    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(ByteString)
-    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(NodeId)
-    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(Guid)
-    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(ExpandedNodeId)
-    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(QualifiedName)
-    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(LocalizedText)
-    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(DateTime)
-    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_TODO(ExtensionObject)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHODY_METHOD_NATIVE_UAF(NodeId)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHODY_METHOD_NATIVE_UAF(Guid)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHODY_METHOD_NATIVE_UAF(ExpandedNodeId)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHODY_METHOD_NATIVE_UAF(QualifiedName)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHODY_METHOD_NATIVE_UAF(ExtensionObject)
 
 
 #define IMPLEMENT_VARIANT_SETXXX_METHOD(XXX, CPPTYPE)                                              \
@@ -551,6 +568,27 @@ namespace uaf
     IMPLEMENT_VARIANT_TOXXXARRAY_METHOD_COMPLEX(ByteString)
     IMPLEMENT_VARIANT_TOXXXARRAY_METHOD_COMPLEX(LocalizedText)
     IMPLEMENT_VARIANT_TOXXXARRAY_METHOD_COMPLEX(DateTime)
+
+#define IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_COMPLEX(XXX)                                          \
+    /** Convert the variant to a complex native C++ array.                                         \
+    =========================================================================================== */ \
+    Status Variant::to##XXX##Matrix(std::vector<uaf::XXX>& vec, std::vector<int32_t> & dim) const  \
+    {                                                                                              \
+        Ua##XXX##Array arr;                                                                        \
+        UaInt32Array d;                                                                            \
+        Status ret = evaluate(uaVariant_.to##XXX##Matrix(arr, d), uaVariant_.type(), OpcUaType_##XXX); \
+        vec.resize(arr.length());                                                                  \
+        for (std::size_t i = 0; i < arr.length(); i++)                                             \
+            vec[i].fromSdk(Ua##XXX(arr[i]));                                                       \
+        dim.resize(d.length());                                                                    \
+        for (OpcUa_UInt32 i = 0; i < d.length(); i++)                                              \
+            dim[i] = d[i];                                                                         \
+        return ret;                                                                                \
+    }
+
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_COMPLEX(ByteString)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_COMPLEX(LocalizedText)
+    IMPLEMENT_VARIANT_TOXXXMATRIX_METHOD_COMPLEX(DateTime)
 
 
 #define IMPLEMENT_VARIANT_SETXXX_METHOD_COMPLEX_WITH_DETACH(XXX)                                   \
