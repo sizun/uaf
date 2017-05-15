@@ -85,7 +85,7 @@ try:
     # we can now continue browsing the other nodes that we discovered, all simultaneously!!!
     noOfFoundReferences = len(firstLevelBrowseResult.targets[0].references)
     newNodesToBeBrowsed = []
-    for i in xrange(noOfFoundReferences):
+    for i in range(noOfFoundReferences):
         newNodesToBeBrowsed.append( Address(firstLevelBrowseResult.targets[0].references[i].nodeId) )
     
     secondLevelBrowseResult = myClient.browse(newNodesToBeBrowsed)
@@ -123,7 +123,7 @@ try:
     # we can now continue browsing the other nodes that we discovered, all simultaneously!!!
     noOfFoundReferences = len(firstLevelBrowseResult.targets[0].references)
     secondLevelBrowseRequest = BrowseRequest(noOfFoundReferences)
-    for i in xrange(noOfFoundReferences):
+    for i in range(noOfFoundReferences):
         secondLevelBrowseRequest.targets[i].address = Address(firstLevelBrowseResult.targets[0].references[i].nodeId)
     
     secondLevelBrowseResult =  myClient.processRequest(secondLevelBrowseRequest)

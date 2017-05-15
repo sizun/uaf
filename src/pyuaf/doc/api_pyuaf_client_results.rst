@@ -505,9 +505,9 @@
         
         >>> noOfElements = len(targets) # will be 5  (alternative: targets.size())
         
-        >>> for i in xrange(len(targets)):
+        >>> for i in range(len(targets)):
         ...     if(targets[i].status.isGood()):
-        ...         for j in xrange(len(targets[i].references)):
+        ...         for j in range(len(targets[i].references)):
         ...             print("Target %d Reference %d --> Display name = %s" 
         ...                   %(i, j, targets[i].references[j].displayName))
         

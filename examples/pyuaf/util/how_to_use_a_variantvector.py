@@ -35,7 +35,7 @@ vec.append( pyuaf.util.LocalizedText("en", "Some text.") )
 noOfElements = len(vec)
 print("noOfElements (should be 3): %d" %len(vec))
 print("Vector contents:")
-for i in xrange(noOfElements):
+for i in range(noOfElements):
     print(" - vec[%d] = %s" %(i, repr(vec[i])))
 
 # now we resize the vector so that it contains 4 elements (the last one being a None value)
@@ -44,7 +44,7 @@ vec.resize(4)
 noOfElements = len(vec)
 print("noOfElements (should be 4): %d" %noOfElements)
 print("Vector contents:")
-for i in xrange(noOfElements):
+for i in range(noOfElements):
     print(" - vec[%d] = %s" %(i, repr(vec[i])))
 
 # now we append an array of Floats.
@@ -58,7 +58,7 @@ noOfElements = len(vec)
 
 print("noOfElements (should be 5): %d" %noOfElements)
 print("Vector contents:")
-for i in xrange(noOfElements):
+for i in range(noOfElements):
     print(" - vec[%d] = %s" %(i, repr(vec[i])))
 
 print("Vector contents, using iterators:")

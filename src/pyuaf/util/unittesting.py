@@ -131,7 +131,7 @@ def testVector(testCase, vectorClass, testItems=[]):
     # create a vector using resize/assignments
     vec1 = vectorClass()
     vec1.resize( len(testItems) )
-    for i in xrange(len(testItems)):
+    for i in range(len(testItems)):
         vec1[i] = testItems[i]
     
     for vec in [vec0, vec1]:
@@ -140,7 +140,7 @@ def testVector(testCase, vectorClass, testItems=[]):
         testCase.assertEqual( len(vec), len(testItems) )
         
         # test __getitem__
-        for i in xrange(len(testItems)):
+        for i in range(len(testItems)):
             testCase.assertEqual( vec[i], testItems[i] )
         
         # test iterator

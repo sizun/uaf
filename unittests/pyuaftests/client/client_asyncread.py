@@ -129,7 +129,7 @@ class ClientAsyncReadTest(unittest.TestCase):
         t = LongLastingTestClass()
         
         # start 30 processes
-        for i in xrange(30):
+        for i in range(30):
             self.client.processRequest(self.request, t.myCallback)
         
         # sleep while the callbacks are running
@@ -146,7 +146,7 @@ class ClientAsyncReadTest(unittest.TestCase):
         t = LongLastingTestClass()
         
         # start 30 processes
-        for i in xrange(30):
+        for i in range(30):
             self.client.beginRead([self.address_Byte, self.address_Int32, self.address_Float], callback=t.myCallback)
         
         # sleep while the callbacks are running

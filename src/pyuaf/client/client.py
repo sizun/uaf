@@ -1185,7 +1185,7 @@ class Client(ClientBase):
         """
         l = []
         vec = ClientBase.allSessionInformations(self)
-        for i in xrange(len(vec)):
+        for i in range(len(vec)):
             l.append(vec[i])
         return l
     
@@ -1218,7 +1218,7 @@ class Client(ClientBase):
         """
         l = []
         vec = ClientBase.allSubscriptionInformations(self)
-        for i in xrange(len(vec)):
+        for i in range(len(vec)):
             l.append(vec[i])
         return l
     
@@ -2157,7 +2157,7 @@ class Client(ClientBase):
             # register the callback functions if necessary
             if len(notificationCallbacks) > 0:
                 if len(notificationCallbacks) == len(result.targets):
-                    for i in xrange(len(notificationCallbacks)):
+                    for i in range(len(notificationCallbacks)):
                         self.__dataNotificationCallbacks__[result.targets[i].clientHandle] \
                                 = notificationCallbacks[i]
                 else:
@@ -2287,7 +2287,7 @@ class Client(ClientBase):
             # register the callback functions if necessary
             if len(notificationCallbacks) > 0:
                 if len(notificationCallbacks) == len(result.targets):
-                    for i in xrange(len(notificationCallbacks)):
+                    for i in range(len(notificationCallbacks)):
                         self.__eventNotificationCallbacks__[result.targets[i].clientHandle] \
                                 = notificationCallbacks[i]
                 else:
@@ -2437,7 +2437,7 @@ class Client(ClientBase):
             ...          monitoringMode = monitoringmodes.Reporting
             ...     try:
             ...         statuses = myClient.setMonitoringMode(clientHandles, monitoringMode)
-            ...         for i in xrange(len(statuses)):
+            ...         for i in range(len(statuses)):
             ...             if not statuses[i].isGood():
             ...                 print("Could not set monitoring mode of widget %d: %s" %(i, statuses[i])) 
             ...     except UafError, e:
@@ -2615,7 +2615,7 @@ class Client(ClientBase):
                 # the UAF will try to re-establish them later)). 
                 if len(notificationCallbacks) > 0:
                     if len(notificationCallbacks) == len(result.targets):
-                        for i in xrange(len(notificationCallbacks)):
+                        for i in range(len(notificationCallbacks)):
                             if type(request) == pyuaf.client.requests.CreateMonitoredDataRequest:
                                 self.__dataNotificationCallbacks__[result.targets[i].clientHandle] = notificationCallbacks[i]
                 

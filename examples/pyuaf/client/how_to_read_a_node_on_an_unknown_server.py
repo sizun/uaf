@@ -56,7 +56,7 @@ result = myClient.read(Address(NodeId(opcuaidentifiers.OpcUaId_Server_NamespaceA
 NAMESPACE_ARRAY = result.targets[0].data
 
 print("NamespaceArray:")
-for i in xrange(len(NAMESPACE_ARRAY)):
+for i in range(len(NAMESPACE_ARRAY)):
     print("NamespaceIndex %d corresponds to NamespaceURI '%s'" %(i, NAMESPACE_ARRAY[i].value))
 
 # Indeed, we can see above that namespace index 0 corresponds 

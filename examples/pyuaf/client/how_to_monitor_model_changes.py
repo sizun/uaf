@@ -49,7 +49,7 @@ def myCallback(notification):
     print("Notification received!")
     changes = notification.fields[0]
     print("Changes:")
-    for i in xrange(len(changes)):
+    for i in range(len(changes)):
         change = changes[i]
         print("- change %d:" %i)
         print(change)

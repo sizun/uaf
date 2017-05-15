@@ -99,7 +99,7 @@ class ClientSetPublishingModeTest(unittest.TestCase):
         self.assertTrue( res.overallStatus.isGood() )
         
         # we expect that the clientSubscriptionHandle is now increased by one:
-        for i in xrange(len(res.targets)):
+        for i in range(len(res.targets)):
             clientSubscriptionHandle1 = clientSubscriptionHandle0 + 1
             self.assertEqual( res.targets[i].clientSubscriptionHandle, clientSubscriptionHandle1 )
         
@@ -114,7 +114,7 @@ class ClientSetPublishingModeTest(unittest.TestCase):
         self.assertGreaterEqual( t1.noOfSuccessFullyReceivedNotifications , 2 )
         
         # verify the monitored item information of the items of the second subscription
-        for i in xrange(len(res.targets)):
+        for i in range(len(res.targets)):
             info = self.client.monitoredItemInformation(res.targets[i].clientHandle)
             self.assertEqual(info.monitoredItemState, pyuaf.client.monitoreditemstates.Created)
             self.assertEqual(info.clientSubscriptionHandle, clientSubscriptionHandle1)

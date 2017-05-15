@@ -158,7 +158,7 @@ try:
             # now print the lists 
             print("")
             print("The results are:")
-            for i in xrange(len(allDoubleValues)):
+            for i in range(len(allDoubleValues)):
                 
                 timeFloat  = allSourceTimes[i].ctime()
                 timeTuple  = time.localtime( long(timeFloat) )

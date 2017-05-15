@@ -48,16 +48,16 @@ def printMatrix(matrix):
       structure:   a pyuaf.util.Matrix instance.
     """
     print("The matrix dimensions:")
-    for i in xrange(len(matrix.dimensions)):
+    for i in range(len(matrix.dimensions)):
         print(" - dimensions[%d] = %s" %(i, matrix.dimensions[i]))
     print("The matrix elements as a contiguous list:")
-    for i in xrange(len(matrix.elements)):
+    for i in range(len(matrix.elements)):
         print(" - elements[%d] = %s (%s)" %(i, matrix.elements[i].value, type(matrix.elements[i]).__name__))
     print("The matrix elements per dimension:")
     # we know the matrix has 3 dimensions in this example
-    for i in xrange(matrix.dimensions[0]):
-        for j in xrange(matrix.dimensions[1]):
-            for k in xrange(matrix.dimensions[2]):
+    for i in range(matrix.dimensions[0]):
+        for j in range(matrix.dimensions[1]):
+            for k in range(matrix.dimensions[2]):
                 print(" - matrix[%d][%d][%d] = %s" %(i, j, k, matrix.getElement([i,j,k]).value))
                 
         
@@ -90,7 +90,7 @@ printMatrix(matrix)
 
 # for this example, we'll manipulate the matrix a bit, and then write it back to the server:
 # First, we'll double all values of the matrix:
-for i in xrange(len(matrix.elements)):
+for i in range(len(matrix.elements)):
     matrix.elements[i] = primitives.Int32(matrix.elements[i].value * 2)
 # Then, we change one particular element:
 matrix.setElement([1,2,1], primitives.Int32(-100))

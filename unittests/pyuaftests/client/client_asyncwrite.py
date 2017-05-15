@@ -138,7 +138,7 @@ class ClientAsyncWriteTest(unittest.TestCase):
         t = LongLastingTestClass()
         
         # start 30 processes
-        for i in xrange(30):
+        for i in range(30):
             self.client.processRequest(self.request, t.myCallback)
         
         # sleep while the callbacks are running
@@ -155,7 +155,7 @@ class ClientAsyncWriteTest(unittest.TestCase):
         t = LongLastingTestClass()
         
         # start 30 processes
-        for i in xrange(30):
+        for i in range(30):
             self.client.beginWrite([self.address_Byte, self.address_Int32, self.address_Float],
                                    [Byte(7), Int32(-8), Float(3.14)],
                                    callback=t.myCallback)

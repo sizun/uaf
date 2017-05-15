@@ -61,7 +61,7 @@ class ClientDiscoveryTest(unittest.TestCase):
     def test_client_Client_findServersNow_100_times_in_parallel(self):
         testResults = TestResults(100)
         
-        for i in xrange(testResults.total()):
+        for i in range(testResults.total()):
             thread.start_new_thread(testParallel, (self.client, testResults))
             
         # wait until all tests have finished

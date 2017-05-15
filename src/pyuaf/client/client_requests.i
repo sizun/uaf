@@ -120,7 +120,7 @@ def __checkKwargs__(kwargs, allowedKeys):
             raise ValueError("Illegal argument: only use one or more of %s" %allowedKeys) 
     
 def __getElementFromKwargs__(kwargs, key, default):
-    if kwargs.has_key(key):
+    if key in kwargs:
         return kwargs[key]
     else:
         return default

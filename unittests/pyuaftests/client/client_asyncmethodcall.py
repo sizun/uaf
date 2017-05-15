@@ -122,7 +122,7 @@ class ClientAsyncMethodCallTest(unittest.TestCase):
         t = LongLastingTestClass()
         
         # start 30 processes
-        for i in xrange(30):
+        for i in range(30):
             result = self.client.beginCall(self.address_Method, self.address_Multiply, [Double(2.0), Double(3.0)], callback=t.myCallback)
             self.assertTrue( result.overallStatus.isGood() )
         
@@ -139,7 +139,7 @@ class ClientAsyncMethodCallTest(unittest.TestCase):
         t = LongLastingTestClass()
         
         # start 30 processes
-        for i in xrange(30):
+        for i in range(30):
             result = self.client.processRequest(self.request, resultCallback=t.myCallback)
             self.assertTrue( result.overallStatus.isGood() )
         

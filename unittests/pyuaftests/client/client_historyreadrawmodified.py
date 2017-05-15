@@ -138,7 +138,7 @@ class HistoryReadRawModifiedTest(unittest.TestCase):
              
             result = self.client.processRequest(request)
              
-            for i in xrange(len(result.targets[0].dataValues)):
+            for i in range(len(result.targets[0].dataValues)):
                 # IMPORTANT: use     <DataValueVector>.allData.append(result.targets[0].dataValues[i])
                 #            or      <Python list>.append(DataValue(result.targets[0].dataValues[i]))
                 #            but NOT <Python list>.append(result.targets[0].dataValues[i]))

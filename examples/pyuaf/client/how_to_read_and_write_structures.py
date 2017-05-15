@@ -56,7 +56,7 @@ def printStructure(structure, indentation=""):
     print(indentation + "Structure contents:")
     
     # loop through the fields of the structure, by looking at the definition:
-    for i in xrange(definition.childrenCount()):
+    for i in range(definition.childrenCount()):
         
         # retrieve information both from the definition and from the structure itself:
         child = definition.child(i)
@@ -87,7 +87,7 @@ def printStructure(structure, indentation=""):
             
             print(indentation + "     - value:")
             # recursive calls to all array items:
-            for j in xrange(len(array)):
+            for j in range(len(array)):
                 print(indentation + "        array[%d]:" %j)
                 printStructure(array[j], indentation + "          ")
         
@@ -207,7 +207,7 @@ print("")
 
 print("Now let's loop through the list:")
 
-for i in xrange(len(extensionObjectList)):
+for i in range(len(extensionObjectList)):
     
     extensionObject = extensionObjectList[i]
     
@@ -326,7 +326,7 @@ def printUnion(union, indentation=""):
         raise Exception("The given union is no union!")
     
     # let's show the possible values by looking at the definition:
-    for i in xrange(definition.childrenCount()):
+    for i in range(definition.childrenCount()):
         
         # retrieve information both from the definition and from the structure itself:
         child = definition.child(i)

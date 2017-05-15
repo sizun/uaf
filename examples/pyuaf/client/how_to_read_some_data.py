@@ -81,7 +81,7 @@ def printResult(readResult):
     data   = readResult.targets[4].data                           # 'data' is a list of pyuaf.util.primitives.SByte
     if status.isGood() and isinstance(data, list):
         print("The array is:")
-        for i in xrange(len(data)):
+        for i in range(len(data)):
             print(" - array[%d] = %d" %(i, data[i].value))
 
 
@@ -202,7 +202,7 @@ print("=========================================================================
 asyncReadRequest = AsyncReadRequest(5)
 
 # we can simply copy the targets of the synchronous request to the asynchronous request:
-for i in xrange(5):
+for i in range(5):
     asyncReadRequest.targets[i] = readRequest.targets[i]
     
 # OPTIONAL: also copy the service config and session config:

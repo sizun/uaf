@@ -105,14 +105,14 @@ class ClientManualConnectionTest(unittest.TestCase):
         testResults = TestResults(30)
         testResults.initializeList("id")
         
-        for i in xrange(testResults.total()):
+        for i in range(testResults.total()):
             clientConnectionId = self.client.manuallyConnect(ARGS.demo_server_uri, self.sessionSettings0)
             self.assertEqual( self.client.sessionInformation(clientConnectionId).clientConnectionId , clientConnectionId )
             self.client.manuallyDisconnect(clientConnectionId)
     
     
     def help_createManySessions(self, res):
-        for i in xrange(res.total()):
+        for i in range(res.total()):
             thread.start_new_thread(connect, (self.client, ARGS.demo_server_uri, i, True, res))
         
         t_timeout = time.time() + 10.0
@@ -167,7 +167,7 @@ class ClientManualConnectionTest(unittest.TestCase):
         testResults = TestResults(30)
         testResults.initializeList("id")
         
-        for i in xrange(testResults.total()):
+        for i in range(testResults.total()):
             thread.start_new_thread(connect, (self.client, ARGS.demo_server_uri, i, False, testResults))
         
         t_timeout = time.time() + 10.0
